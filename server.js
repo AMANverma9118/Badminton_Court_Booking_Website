@@ -9,7 +9,10 @@ const bookingService = require('./src/application/BookingService');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: ['https://your-frontend-url.vercel.app', 'http://localhost:5173'],
+  credentials: true
+}));
 app.use(express.json());
 
 app.use('/api/auth', authRouter);

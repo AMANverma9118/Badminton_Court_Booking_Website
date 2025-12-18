@@ -1,4 +1,4 @@
-export const API_URL = 'http://localhost:5000/api';
+export const API_URL = 'https://badminton-court-booking-website.onrender.com/api';
 
 export const getAuthHeaders = () => ({
   'Content-Type': 'application/json',
