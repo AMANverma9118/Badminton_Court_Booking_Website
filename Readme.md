@@ -1,7 +1,7 @@
-🏸 ProCourt – Badminton Court Booking System
+🏸 ProCourt – Complete Badminton Court Booking System
 
-ProCourt is a full-stack web application that enables users to book badminton courts with dynamic pricing, optional coaches and equipment, and a smart waitlisting system for high-demand slots.
-It also provides a powerful admin dashboard for managing resources and bookings.
+ProCourt is a full-stack badminton court booking platform that allows users to book courts, coaches, and equipment with dynamic pricing, real-time availability, and a smart waitlisting system.
+It also provides a powerful admin dashboard for managing resources, pricing rules, and bookings.
 
 🌐 Live Application
 
@@ -18,15 +18,15 @@ Authentication – Secure JWT-based signup and login
 
 Court Booking – Book indoor and outdoor badminton courts
 
-Smart Waitlist – Join a waitlist automatically when slots are full
-
 Real-time Availability – Instant slot availability checks
 
-Dynamic Pricing – Automatic price calculation based on:
+Smart Waitlist – Join a queue when slots are full
+
+Dynamic Pricing – Automatic pricing based on:
 
 Indoor courts (+20%)
 
-Peak hours: 6 PM – 9 PM (+50%)
+Peak hours (6 PM – 9 PM: +50%)
 
 Weekends (+30%)
 
@@ -34,34 +34,36 @@ Add-ons – Optional coach booking and equipment rental
 
 Booking History – View confirmed, upcoming, and waitlisted bookings
 
-Live Price Summary – Real-time pricing breakdown before confirmation
+Live Price Summary – Real-time price calculation before booking
 
 🛠️ Admin Features
 
 Dashboard Analytics – Overview of bookings, revenue, and resources
 
-Resource Management – Full CRUD for courts, coaches, and equipment
+Court Management – Create, update, and delete courts
 
-Waitlist Management – Monitor and manage queues for popular slots
+Coach Management – Manage coach availability and pricing
 
-Pricing Rules – Configure and manage dynamic pricing multipliers
+Equipment Management – Track rental equipment and stock
 
-Booking Overview – View and manage all user bookings
+Waitlist Management – View and manage waitlist queues
+
+Pricing Rules – Configure dynamic pricing multipliers
+
+Booking Overview – View and manage all system bookings
 
 ⏳ Smart Waitlist System
 
-To handle high-demand booking periods, ProCourt includes a priority-based waitlist:
+The system handles high-demand booking slots using a priority-based waitlist:
 
 Join Waitlist:
-When a selected slot is unavailable, users can opt to join the waitlist.
+If a selected slot is unavailable, users can join the waitlist.
 
 Queue Logic:
-Waitlists are maintained on a first-come, first-served basis for each court and time slot.
+Users are added on a first-come, first-served basis for each court and time slot.
 
 Automatic Promotion:
-If a booking is cancelled, the next eligible user in the queue is identified and notified to claim the slot.
-
-This ensures fair allocation and maximum court utilization.
+When a booking is cancelled, the next user in the queue is eligible to claim the slot.
 
 🚀 Tech Stack
 Frontend
@@ -72,7 +74,7 @@ Tailwind CSS
 
 Vite
 
-Lucide React Icons
+Lucide React
 
 Backend
 
@@ -86,23 +88,109 @@ Mongoose
 
 JWT Authentication
 
-bcrypt for password security
+bcrypt
 
-💡 Project Highlights
+📁 Project Structure
+BADMINTON_COURT_WEBSITE/
+├── client/                 # Frontend (React + Vite)
+├── routes/                 # API routes
+├── src/
+│   ├── application/        # Booking services
+│   ├── domain/             # Pricing engine
+│   └── infrastructure/     # MongoDB schemas
+├── seed.js                 # Database seeding
+├── server.js               # Express entry point
+├── .env
+└── README.md
 
-Clean separation of business logic and pricing engine
+🛠️ Setup & Installation
+Prerequisites
 
-Real-time pricing with configurable rules
+Node.js (v14+)
 
-Scalable REST API design
+MongoDB (local or Atlas)
 
-Production-deployed frontend and backend
+npm
 
-Designed for real-world booking scenarios with waitlist handling
+1️⃣ Clone Repository
+git clone <repository-url>
+cd BADMINTON_COURT_WEBSITE
 
-🏸 Built With Passion
+2️⃣ Backend Setup
+npm install
 
-Built with ❤️ for badminton enthusiasts and real-world scheduling challenges.
 
-👉 Try it live:
+Create .env in root:
+
+PORT=5000
+MONGODB_URI=mongodb://localhost:27017/procourt
+JWT_SECRET=your_super_secret_jwt_key
+NODE_ENV=development
+
+
+Seed database:
+
+npm run seed
+
+
+Start backend:
+
+npm run dev
+
+
+Backend runs on:
+http://localhost:5000
+
+3️⃣ Frontend Setup
+cd client
+npm install
+npm run dev
+
+
+Frontend runs on:
+http://localhost:5173
+
+🔐 Test Credentials
+
+After running the seed script, use the following accounts:
+
+console.log("Admin: admin@procourt.com / admin123");
+console.log("User:  user@procourt.com / user123");
+
+Admin Account
+
+Email: admin@procourt.com
+
+Password: admin123
+
+Access: Full admin dashboard
+
+User Account
+
+Email: user@procourt.com
+
+Password: user123
+
+Access: Court booking, waitlist, history
+
+⚡ Quick Start (Local)
+npm install
+npm run seed
+npm run dev
+
+cd client
+npm install
+npm run dev
+
+
+Open:
+👉 http://localhost:5173
+
+📄 License
+
+MIT License – Free to use for personal and commercial projects.
+
+🏸 Built with ❤️ for Badminton Enthusiasts
+
+Live App:
 https://badminton-court-booking-website.vercel.app/
