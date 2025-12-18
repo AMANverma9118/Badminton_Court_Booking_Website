@@ -7,24 +7,21 @@ const seedData = async () => {
     await mongoose.connect(process.env.MONGODB_URI);
     console.log("Connected to MongoDB for seeding...");
 
-    // Clear existing data
     await User.deleteMany({});
     await Court.deleteMany({});
     await Coach.deleteMany({});
     await Equipment.deleteMany({});
     await PricingRule.deleteMany({});
 
-    // Create Admin User
     const adminUser = new User({
       name: "Admin User",
       email: "admin@procourt.com",
-      password: "admin123", // Will be hashed by pre-save hook
+      password: "admin123",
       role: "admin"
     });
     await adminUser.save();
     console.log("✅ Admin user created (email: admin@procourt.com, password: admin123)");
 
-    // Create Test User
     const testUser = new User({
       name: "Test User",
       email: "user@procourt.com",
@@ -34,7 +31,6 @@ const seedData = async () => {
     await testUser.save();
     console.log("✅ Test user created (email: user@procourt.com, password: user123)");
 
-    // Insert Courts
     await Court.insertMany([
       { name: "Court 1 (Indoor)", type: "indoor", basePrice: 20, isActive: true },
       { name: "Court 2 (Indoor)", type: "indoor", basePrice: 20, isActive: true },
@@ -43,7 +39,6 @@ const seedData = async () => {
     ]);
     console.log("✅ Courts created");
 
-    // Insert Coaches
     await Coach.insertMany([
       { name: "Coach Anjali", hourlyRate: 30, isAvailable: true, specialization: "Advanced Training" },
       { name: "Coach Vikram", hourlyRate: 25, isAvailable: true, specialization: "Beginners" },
@@ -51,14 +46,12 @@ const seedData = async () => {
     ]);
     console.log("✅ Coaches created");
 
-    // Insert Equipment
     await Equipment.insertMany([
       { name: "Professional Racket", totalStock: 10, hourlyRate: 5, isAvailable: true },
       { name: "Court Shoes", totalStock: 8, hourlyRate: 4, isAvailable: true }
     ]);
     console.log("✅ Equipment created");
 
-    // Insert Pricing Rules
     await PricingRule.insertMany([
       { 
         name: "Peak Hours (6-9 PM)", 

@@ -9,17 +9,13 @@ const bookingService = require('./src/application/BookingService');
 
 const app = express();
 
-// Middleware
 app.use(cors());
 app.use(express.json());
 
-// Auth routes (public)
 app.use('/api/auth', authRouter);
 
-// Admin routes (protected)
 app.use('/api/admin', adminRouter);
 
-// User booking routes (protected)
 app.get('/api/resources', authMiddleware, async (req, res) => {
   try {
     const resources = await bookingService.getActiveResources();
@@ -47,7 +43,16 @@ app.get('/api/history', authMiddleware, async (req, res) => {
   }
 });
 
-// Connect to MongoDB and start server
+app.post('/api/check-availability', authMiddleware, async (req, res) => {
+  try {
+    const { courtId, startTime } = req.body;
+    const isAvailable = await bookingService.checkAvailability(courtId, startTime);
+    res.json({ available: isAvailable });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('✅ Connected to MongoDB');

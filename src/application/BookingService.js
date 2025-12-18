@@ -11,7 +11,6 @@ class BookingService {
       const { courtId, coachId, equipment, startTime } = payload;
       const start = new Date(startTime);
 
-      // 1. Check for Court Double Booking
       const conflict = await Booking.findOne({ 
         courtId, 
         startTime: start,
@@ -20,7 +19,6 @@ class BookingService {
       
       if (conflict) throw new Error("This court is already booked for the selected time.");
 
-      // 2. Fetch resources and validate availability
       const court = await Court.findById(courtId).session(session);
       if (!court || !court.isActive) {
         throw new Error("Selected court is not available.");
@@ -46,7 +44,6 @@ class BookingService {
         }
       }
 
-      // 3. Dynamic Pricing using active rules from database
       const activeRules = await PricingRule.find({ isActive: true }).session(session);
       const totalPrice = PricingEngine.calculate(
         court.basePrice, 
@@ -57,7 +54,6 @@ class BookingService {
         equipFees
       );
 
-      // 4. Save Booking with userId
       const booking = new Booking({ 
         ...payload, 
         userId,
@@ -68,7 +64,6 @@ class BookingService {
 
       await session.commitTransaction();
       
-      // Populate references before returning
       await booking.populate('courtId coachId equipment.itemId');
       return booking;
     } catch (error) {
@@ -96,6 +91,16 @@ class BookingService {
 
   async getActivePricingRules() {
     return await PricingRule.find({ isActive: true });
+  }
+
+  async checkAvailability(courtId, startTime) {
+    const start = new Date(startTime);
+    const conflict = await Booking.findOne({ 
+      courtId, 
+      startTime: start,
+      status: 'confirmed'
+    });
+    return !conflict;
   }
 }
 

@@ -4,7 +4,6 @@ const { authMiddleware, adminMiddleware } = require('./auth');
 
 const router = express.Router();
 
-// Apply auth and admin middleware to all routes
 router.use(authMiddleware);
 router.use(adminMiddleware);
 
