@@ -9,10 +9,17 @@ const bookingService = require('./src/application/BookingService');
 
 const app = express();
 
-app.use(cors({
-  origin: ['https://your-frontend-url.vercel.app', 'http://localhost:5173'],
-  credentials: true
-}));
+const corsOptions = {
+  origin: [
+    'https://badminton-court-booking-website.vercel.app', 
+    'http://localhost:5173'                             
+  ],
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204
+};
+
+app.use(cors(corsOptions));
 app.use(express.json());
 
 app.use('/api/auth', authRouter);
