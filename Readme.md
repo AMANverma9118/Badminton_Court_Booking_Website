@@ -90,6 +90,8 @@ BADMINTON_COURT_WEBSITE/
 ├── server.js               # Express entry point
 ├── .env
 └── README.md
+```
+
 🛠️ Setup & Installation
 Prerequisites
 
