@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Shield, LogOut, BarChart3, Award, Users, Package, DollarSign, Calendar, Edit, Trash2, Plus } from 'lucide-react';
+import { Shield, LogOut, BarChart3, Award, Users, Package, DollarSign, Calendar, Edit, Trash2, Plus, Menu, X } from 'lucide-react';
 import { useAdminStats, useAdminData } from '../hooks/useApi';
 import { CourtForm, CoachForm, EquipmentForm, PricingRuleForm } from './Forms';
 
@@ -7,6 +7,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
   const [view, setView] = useState('stats');
   const [editItem, setEditItem] = useState(null);
   const [showForm, setShowForm] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   
   const { stats, reload: reloadStats } = useAdminStats();
   const { data: courts, create: createCourt, update: updateCourt, remove: removeCourt } = useAdminData('courts');
@@ -58,38 +59,65 @@ export const AdminDashboard = ({ user, onLogout }) => {
     }
   };
 
+  const handleViewChange = (newView) => {
+    setView(newView);
+    setShowForm(false);
+    setSidebarOpen(false);
+  };
+
   return (
     <div className="min-h-screen bg-gray-50">
-      <header className="bg-white shadow-sm border-b border-gray-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <header className="bg-white shadow-sm border-b border-gray-200 sticky top-0 z-40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4 sm:py-6">
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-3">
-              <div className="w-12 h-12 bg-linear-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
-                <Shield className="w-7 h-7 text-white" />
+              <button 
+                onClick={() => setSidebarOpen(!sidebarOpen)}
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+              >
+                {sidebarOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              </button>
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-linear-to-br from-purple-500 to-pink-600 rounded-xl flex items-center justify-center">
+                <Shield className="w-5 h-5 sm:w-7 sm:h-7 text-white" />
               </div>
               <div>
-                <h1 className="text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold bg-linear-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
                   Admin Dashboard
                 </h1>
-                <p className="text-sm text-gray-600">Welcome, {user.name}</p>
+                <p className="text-xs sm:text-sm text-gray-600 hidden sm:block">Welcome, {user.name}</p>
               </div>
             </div>
             <button 
               onClick={onLogout} 
-              className="px-4 py-2.5 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-all flex items-center space-x-2"
+              className="px-3 py-2 sm:px-4 sm:py-2.5 bg-red-50 text-red-600 rounded-lg font-medium hover:bg-red-100 transition-all flex items-center space-x-2 text-sm sm:text-base"
             >
               <LogOut className="w-4 h-4" />
-              <span>Logout</span>
+              <span className="hidden sm:inline">Logout</span>
             </button>
           </div>
         </div>
       </header>
 
-      <div className="flex">
-        <aside className="w-64 bg-white min-h-screen border-r border-gray-200">
-          <nav className="p-4 space-y-2">
+      <div className="flex relative">
+        {/* Mobile Sidebar Overlay */}
+        {sidebarOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-50 z-30 lg:hidden"
+            onClick={() => setSidebarOpen(false)}
+          />
+        )}
+
+        {/* Sidebar */}
+        <aside className={`
+          fixed lg:sticky top-0 left-0 h-screen
+          w-64 bg-white border-r border-gray-200 z-40
+          transform transition-transform duration-300 ease-in-out
+          ${sidebarOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
+          lg:block overflow-y-auto
+        `}>
+          <nav className="p-4 space-y-2 pt-20 lg:pt-4">
             <button 
-              onClick={() => { setView('stats'); setShowForm(false); }} 
+              onClick={() => handleViewChange('stats')} 
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                 view === 'stats' ? 'bg-purple-50 text-purple-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -98,7 +126,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
               <span>Dashboard</span>
             </button>
             <button 
-              onClick={() => { setView('courts'); setShowForm(false); }} 
+              onClick={() => handleViewChange('courts')} 
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                 view === 'courts' ? 'bg-purple-50 text-purple-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -107,7 +135,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
               <span>Courts</span>
             </button>
             <button 
-              onClick={() => { setView('coaches'); setShowForm(false); }} 
+              onClick={() => handleViewChange('coaches')} 
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                 view === 'coaches' ? 'bg-purple-50 text-purple-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -116,7 +144,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
               <span>Coaches</span>
             </button>
             <button 
-              onClick={() => { setView('equipment'); setShowForm(false); }} 
+              onClick={() => handleViewChange('equipment')} 
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                 view === 'equipment' ? 'bg-purple-50 text-purple-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -125,7 +153,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
               <span>Equipment</span>
             </button>
             <button 
-              onClick={() => { setView('pricing'); setShowForm(false); }} 
+              onClick={() => handleViewChange('pricing')} 
               className={`w-full flex items-center space-x-3 px-4 py-3 rounded-lg transition-all ${
                 view === 'pricing' ? 'bg-purple-50 text-purple-600 font-semibold' : 'text-gray-600 hover:bg-gray-50'
               }`}
@@ -136,68 +164,68 @@ export const AdminDashboard = ({ user, onLogout }) => {
           </nav>
         </aside>
 
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 min-h-screen">
           {view === 'stats' && (
             <div>
-              <h2 className="text-2xl font-bold mb-6">Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+              <h2 className="text-xl sm:text-2xl font-bold mb-4 sm:mb-6">Overview</h2>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 mb-6 sm:mb-8">
+                <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 font-medium">Total Bookings</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-2">{stats.totalBookings}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Bookings</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stats.totalBookings}</p>
                     </div>
-                    <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-                      <Calendar className="w-6 h-6 text-blue-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                      <Calendar className="w-5 h-5 sm:w-6 sm:h-6 text-blue-600" />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 font-medium">Total Revenue</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-2">₹{stats.totalRevenue.toFixed(0)}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 font-medium">Total Revenue</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">₹{stats.totalRevenue.toFixed(0)}</p>
                     </div>
-                    <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-                      <DollarSign className="w-6 h-6 text-green-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg flex items-center justify-center">
+                      <DollarSign className="w-5 h-5 sm:w-6 sm:h-6 text-green-600" />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 font-medium">Active Courts</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeCourts}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 font-medium">Active Courts</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stats.activeCourts}</p>
                     </div>
-                    <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-                      <Award className="w-6 h-6 text-purple-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                      <Award className="w-5 h-5 sm:w-6 sm:h-6 text-purple-600" />
                     </div>
                   </div>
                 </div>
-                <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                <div className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                   <div className="flex items-center justify-between">
                     <div>
-                      <p className="text-sm text-gray-600 font-medium">Active Coaches</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-2">{stats.activeCoaches}</p>
+                      <p className="text-xs sm:text-sm text-gray-600 font-medium">Active Coaches</p>
+                      <p className="text-2xl sm:text-3xl font-bold text-gray-900 mt-2">{stats.activeCoaches}</p>
                     </div>
-                    <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-                      <Users className="w-6 h-6 text-orange-600" />
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-orange-100 rounded-lg flex items-center justify-center">
+                      <Users className="w-5 h-5 sm:w-6 sm:h-6 text-orange-600" />
                     </div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-                <h3 className="text-xl font-bold mb-4">Recent Bookings</h3>
+              <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 sm:p-6">
+                <h3 className="text-lg sm:text-xl font-bold mb-4">Recent Bookings</h3>
                 <div className="space-y-3">
                   {bookings.slice(0, 10).map(b => (
-                    <div key={b._id} className="flex justify-between items-center p-4 bg-gray-50 rounded-lg">
+                    <div key={b._id} className="flex flex-col sm:flex-row justify-between sm:items-center p-4 bg-gray-50 rounded-lg gap-3">
                       <div>
-                        <p className="font-semibold text-gray-900">{b.courtId?.name}</p>
-                        <p className="text-sm text-gray-600">{b.userId?.name} • {new Date(b.startTime).toLocaleString()}</p>
+                        <p className="font-semibold text-gray-900 text-sm sm:text-base">{b.courtId?.name}</p>
+                        <p className="text-xs sm:text-sm text-gray-600">{b.userId?.name} • {new Date(b.startTime).toLocaleString()}</p>
                       </div>
-                      <div className="text-right">
-                        <p className="font-bold text-gray-900">₹{b.totalPrice}</p>
+                      <div className="text-left sm:text-right">
+                        <p className="font-bold text-gray-900 text-lg sm:text-xl">₹{b.totalPrice}</p>
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">{b.status}</span>
                       </div>
                     </div>
@@ -209,11 +237,11 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
           {view === 'courts' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Courts Management</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold">Courts Management</h2>
                 <button 
                   onClick={() => { setEditItem(null); setShowForm(true); }} 
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center space-x-2"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Court</span>
@@ -222,13 +250,13 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
               {showForm && <CourtForm item={editItem} onSave={(data) => handleSave('courts', data)} onCancel={() => { setShowForm(false); setEditItem(null); }} />}
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
                 {courts.map(court => (
-                  <div key={court._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                  <div key={court._id} className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-bold text-lg text-gray-900">{court.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{court.type} Court</p>
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900">{court.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">{court.type} Court</p>
                       </div>
                       <div className="flex space-x-2">
                         <button 
@@ -246,7 +274,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-purple-600">₹{court.basePrice}/hr</span>
+                      <span className="text-xl sm:text-2xl font-bold text-purple-600">₹{court.basePrice}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         court.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>
@@ -261,11 +289,11 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
           {view === 'coaches' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Coaches Management</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold">Coaches Management</h2>
                 <button 
                   onClick={() => { setEditItem(null); setShowForm(true); }} 
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center space-x-2"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Coach</span>
@@ -274,13 +302,13 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
               {showForm && <CoachForm item={editItem} onSave={(data) => handleSave('coaches', data)} onCancel={() => { setShowForm(false); setEditItem(null); }} />}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {coaches.map(coach => (
-                  <div key={coach._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                  <div key={coach._id} className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-bold text-lg text-gray-900">{coach.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">{coach.specialization || 'General Coach'}</p>
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900">{coach.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">{coach.specialization || 'General Coach'}</p>
                       </div>
                       <div className="flex space-x-2">
                         <button 
@@ -298,7 +326,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-purple-600">₹{coach.hourlyRate}/hr</span>
+                      <span className="text-lg sm:text-xl font-bold text-purple-600">₹{coach.hourlyRate}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         coach.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>
@@ -313,11 +341,11 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
           {view === 'equipment' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Equipment Management</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold">Equipment Management</h2>
                 <button 
                   onClick={() => { setEditItem(null); setShowForm(true); }} 
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center space-x-2"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Equipment</span>
@@ -326,13 +354,13 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
               {showForm && <EquipmentForm item={editItem} onSave={(data) => handleSave('equipment', data)} onCancel={() => { setShowForm(false); setEditItem(null); }} />}
 
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {equipment.map(item => (
-                  <div key={item._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                  <div key={item._id} className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
                     <div className="flex justify-between items-start mb-3">
                       <div>
-                        <h3 className="font-bold text-lg text-gray-900">{item.name}</h3>
-                        <p className="text-sm text-gray-600 mt-1">Stock: {item.totalStock} units</p>
+                        <h3 className="font-bold text-base sm:text-lg text-gray-900">{item.name}</h3>
+                        <p className="text-xs sm:text-sm text-gray-600 mt-1">Stock: {item.totalStock} units</p>
                       </div>
                       <div className="flex space-x-2">
                         <button 
@@ -350,7 +378,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-purple-600">₹{item.hourlyRate}/hr</span>
+                      <span className="text-lg sm:text-xl font-bold text-purple-600">₹{item.hourlyRate}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         item.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>
@@ -365,11 +393,11 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
           {view === 'pricing' && (
             <div>
-              <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bold">Pricing Rules</h2>
+              <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6 gap-3">
+                <h2 className="text-xl sm:text-2xl font-bold">Pricing Rules</h2>
                 <button 
                   onClick={() => { setEditItem(null); setShowForm(true); }} 
-                  className="px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center space-x-2"
+                  className="w-full sm:w-auto px-4 py-2 bg-purple-600 text-white rounded-lg font-medium hover:bg-purple-700 transition-all flex items-center justify-center space-x-2"
                 >
                   <Plus className="w-4 h-4" />
                   <span>Add Rule</span>
@@ -380,21 +408,21 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
               <div className="space-y-4">
                 {pricingRules.map(rule => (
-                  <div key={rule._id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-                    <div className="flex justify-between items-start">
+                  <div key={rule._id} className="bg-white p-4 sm:p-6 rounded-xl shadow-sm border border-gray-200">
+                    <div className="flex flex-col sm:flex-row justify-between items-start gap-4">
                       <div className="flex-1">
-                        <div className="flex items-center space-x-3 mb-2">
-                          <h3 className="font-bold text-lg text-gray-900">{rule.name}</h3>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-2">
+                          <h3 className="font-bold text-base sm:text-lg text-gray-900">{rule.name}</h3>
                           <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                             rule.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                           }`}>
                             {rule.isActive ? 'Active' : 'Inactive'}
                           </span>
                         </div>
-                        <p className="text-sm text-gray-600 mb-2">{rule.description}</p>
-                        <div className="flex items-center space-x-4">
-                          <span className="text-sm text-gray-600">Type: <span className="font-semibold text-gray-900">{rule.ruleType}</span></span>
-                          <span className="text-sm text-gray-600">Multiplier: <span className="font-semibold text-purple-600">{rule.multiplier}x</span></span>
+                        <p className="text-xs sm:text-sm text-gray-600 mb-2">{rule.description}</p>
+                        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
+                          <span className="text-xs sm:text-sm text-gray-600">Type: <span className="font-semibold text-gray-900">{rule.ruleType}</span></span>
+                          <span className="text-xs sm:text-sm text-gray-600">Multiplier: <span className="font-semibold text-purple-600">{rule.multiplier}x</span></span>
                         </div>
                       </div>
                       <div className="flex space-x-2">
