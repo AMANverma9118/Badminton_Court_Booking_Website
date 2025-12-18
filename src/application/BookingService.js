@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-const { Booking, Court, Equipment, Coach, PricingRule } = require('../infrastructure/models/Schemas');
+const { Booking, Court, Equipment, Coach, PricingRule,Waitlist } = require('../infrastructure/models/Schemas');
 const PricingEngine = require('../domain/PricingEngine');
 
 class BookingService {
@@ -72,6 +72,42 @@ class BookingService {
     } finally {
       session.endSession();
     }
+  }
+
+  async joinWaitlist(userId, bookingData) {
+    const existing = await Waitlist.findOne({ 
+      userId, 
+      courtId: bookingData.courtId, 
+      startTime: bookingData.startTime 
+    });
+    
+    if (existing) throw new Error('You are already on the waitlist for this slot.');
+    
+    return await Waitlist.create({
+      userId,
+      courtId: bookingData.courtId,
+      startTime: bookingData.startTime
+    });
+  }
+
+  async cancelBooking(bookingId) {
+    const booking = await Booking.findByIdAndDelete(bookingId);
+    if (!booking) return;
+
+    const nextInLine = await Waitlist.findOne({
+      courtId: booking.courtId,
+      startTime: booking.startTime,
+      status: 'waiting'
+    }).sort({ createdAt: 1 });
+
+    if (nextInLine) {
+      nextInLine.status = 'notified';
+      await nextInLine.save();
+      
+      console.log(`Notification sent to User ${nextInLine.userId}: Slot is now available!`);
+    }
+    
+    return booking;
   }
 
   async getUserBookings(userId) {

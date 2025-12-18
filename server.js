@@ -6,6 +6,7 @@ require('dotenv').config();
 const { router: authRouter, authMiddleware } = require('./routes/auth');
 const adminRouter = require('./routes/admin');
 const bookingService = require('./src/application/BookingService');
+const { Waitlist } = require('./src/infrastructure/models/Schemas');
 
 const app = express();
 
@@ -39,6 +40,31 @@ app.post('/api/book', authMiddleware, async (req, res) => {
   try {
     const booking = await bookingService.createBooking(req.body, req.userId);
     res.status(201).json(booking);
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+app.post('/api/check-availability', authMiddleware, async (req, res) => {
+  try {
+    const { courtId, startTime } = req.body;
+    const isAvailable = await bookingService.checkAvailability(courtId, startTime);
+    
+    let waitlistCount = 0;
+    if (!isAvailable) {
+      waitlistCount = await Waitlist.countDocuments({ courtId, startTime, status: 'waiting' });
+    }
+    
+    res.json({ available: isAvailable, waitlistCount });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/waitlist/join', authMiddleware, async (req, res) => {
+  try {
+    const waitlistEntry = await bookingService.joinWaitlist(req.userId, req.body);
+    res.status(201).json({ message: 'Added to waitlist!', waitlistEntry });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }

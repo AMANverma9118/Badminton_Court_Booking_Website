@@ -67,11 +67,22 @@ const BookingSchema = new mongoose.Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
+const waitlistSchema = new mongoose.Schema({
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User', required: true },
+  courtId: { type: mongoose.Schema.Types.ObjectId, ref: 'Court', required: true },
+  startTime: { type: Date, required: true },
+  status: { type: String, enum: ['waiting', 'notified', 'booked'], default: 'waiting' },
+  createdAt: { type: Date, default: Date.now }
+});
+
+waitlistSchema.index({ courtId: 1, startTime: 1, createdAt: 1 });
+
 module.exports = {
   User: mongoose.model('User', UserSchema),
   Court: mongoose.model('Court', CourtSchema),
   Coach: mongoose.model('Coach', CoachSchema),
   Equipment: mongoose.model('Equipment', EquipmentSchema),
   PricingRule: mongoose.model('PricingRule', PricingRuleSchema),
-  Booking: mongoose.model('Booking', BookingSchema)
+  Booking: mongoose.model('Booking', BookingSchema),
+  Waitlist: mongoose.model('Waitlist', waitlistSchema)
 };
