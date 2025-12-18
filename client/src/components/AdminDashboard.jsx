@@ -1,5 +1,3 @@
-// src/components/AdminDashboard.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Shield, LogOut, BarChart3, Award, Users, Package, DollarSign, Calendar, Edit, Trash2, Plus } from 'lucide-react';
 import { useAdminStats, useAdminData } from '../hooks/useApi';
@@ -62,7 +60,6 @@ export const AdminDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
@@ -89,7 +86,6 @@ export const AdminDashboard = ({ user, onLogout }) => {
       </header>
 
       <div className="flex">
-        {/* Sidebar */}
         <aside className="w-64 bg-white min-h-screen border-r border-gray-200">
           <nav className="p-4 space-y-2">
             <button 
@@ -140,7 +136,6 @@ export const AdminDashboard = ({ user, onLogout }) => {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <main className="flex-1 p-8">
           {view === 'stats' && (
             <div>
@@ -161,7 +156,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                   <div className="flex items-center justify-between">
                     <div>
                       <p className="text-sm text-gray-600 font-medium">Total Revenue</p>
-                      <p className="text-3xl font-bold text-gray-900 mt-2">${stats.totalRevenue.toFixed(0)}</p>
+                      <p className="text-3xl font-bold text-gray-900 mt-2">₹{stats.totalRevenue.toFixed(0)}</p>
                     </div>
                     <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
                       <DollarSign className="w-6 h-6 text-green-600" />
@@ -202,7 +197,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                         <p className="text-sm text-gray-600">{b.userId?.name} • {new Date(b.startTime).toLocaleString()}</p>
                       </div>
                       <div className="text-right">
-                        <p className="font-bold text-gray-900">${b.totalPrice}</p>
+                        <p className="font-bold text-gray-900">₹{b.totalPrice}</p>
                         <span className="text-xs bg-green-100 text-green-700 px-2 py-1 rounded-full">{b.status}</span>
                       </div>
                     </div>
@@ -251,7 +246,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-2xl font-bold text-purple-600">${court.basePrice}/hr</span>
+                      <span className="text-2xl font-bold text-purple-600">₹{court.basePrice}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         court.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>
@@ -303,7 +298,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-purple-600">${coach.hourlyRate}/hr</span>
+                      <span className="text-xl font-bold text-purple-600">₹{coach.hourlyRate}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         coach.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>
@@ -355,7 +350,7 @@ export const AdminDashboard = ({ user, onLogout }) => {
                       </div>
                     </div>
                     <div className="flex justify-between items-center">
-                      <span className="text-xl font-bold text-purple-600">${item.hourlyRate}/hr</span>
+                      <span className="text-xl font-bold text-purple-600">₹{item.hourlyRate}/hr</span>
                       <span className={`text-xs px-3 py-1 rounded-full font-semibold ${
                         item.isAvailable ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-600'
                       }`}>

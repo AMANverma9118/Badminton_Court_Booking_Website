@@ -1,5 +1,3 @@
-// src/components/AuthForm.jsx
-
 import React, { useState } from 'react';
 import { Award, Eye, EyeOff } from 'lucide-react';
 

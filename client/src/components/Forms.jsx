@@ -1,5 +1,3 @@
-// src/components/Forms.jsx
-
 import React, { useState } from 'react';
 import { Save, X } from 'lucide-react';
 
@@ -36,7 +34,7 @@ export const CourtForm = ({ item, onSave, onCancel }) => {
           </select>
         </div>
         <div>
-          <label className="block text-sm font-semibold text-gray-700 mb-2">Base Price ($/hr)</label>
+          <label className="block text-sm font-semibold text-gray-700 mb-2">Base Price (/hr)</label>
           <input 
             type="number" 
             value={form.basePrice} 

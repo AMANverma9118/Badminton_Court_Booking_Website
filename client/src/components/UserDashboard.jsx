@@ -1,5 +1,3 @@
-// src/components/UserDashboard.jsx
-
 import React, { useState, useEffect } from 'react';
 import { Award, LogOut, Calendar, Clock, Users, CheckCircle, XCircle, ShoppingCart } from 'lucide-react';
 import { useResources, useBookings } from '../hooks/useApi';
@@ -62,7 +60,6 @@ export const UserDashboard = ({ user, onLogout }) => {
 
   return (
     <div className="min-h-screen bg-linear-to-br from-indigo-50 via-white to-purple-50">
-      {/* Header */}
       <header className="bg-white shadow-sm border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
           <div className="flex items-center justify-between">
@@ -110,11 +107,9 @@ export const UserDashboard = ({ user, onLogout }) => {
         </div>
       </header>
 
-      {/* Main Content */}
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {view === 'book' ? (
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Booking Form */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 overflow-hidden">
                 <div className="bg-linear-to-r from-indigo-600 to-purple-600 px-8 py-6">
@@ -156,7 +151,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                           }`}
                         >
                           <div className="font-semibold text-gray-900">{court.name}</div>
-                          <div className="text-sm text-gray-600 mt-1">{court.type} • ${court.basePrice}/hr</div>
+                          <div className="text-sm text-gray-600 mt-1">{court.type} • ₹{court.basePrice}/hr</div>
                         </button>
                       ))}
                     </div>
@@ -220,7 +215,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                             onChange={(e) => handleEquipChange(item._id, e.target.checked)} 
                             className="w-5 h-5 text-indigo-600" 
                           />
-                          <span className="text-sm text-gray-700">{item.name} (+${item.hourlyRate})</span>
+                          <span className="text-sm text-gray-700">{item.name} (+₹{item.hourlyRate})</span>
                         </label>
                       ))}
                     </div>
@@ -241,7 +236,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                           }`}
                         >
                           <div className="font-semibold text-gray-900">{coach.name}</div>
-                          <div className="text-sm text-gray-600 mt-1">+${coach.hourlyRate}/hr</div>
+                          <div className="text-sm text-gray-600 mt-1">+₹{coach.hourlyRate}/hr</div>
                         </button>
                       ))}
                     </div>
@@ -258,7 +253,6 @@ export const UserDashboard = ({ user, onLogout }) => {
               </div>
             </div>
 
-            {/* Price Summary */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-6 sticky top-8">
                 <div className="flex items-center space-x-2 mb-6 text-indigo-600">
@@ -289,7 +283,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                           item.type === 'equipment' ? 'text-purple-700' :
                           'text-gray-900'
                         }`}>
-                          +${item.price}
+                          +₹{item.price}
                         </span>
                       </div>
                       {item.badges && item.badges.length > 0 && (
@@ -320,7 +314,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                   <div className="flex justify-between items-center">
                     <span className="text-gray-500 font-bold uppercase tracking-wider text-xs">Total Amount</span>
                     <span className="text-4xl font-black bg-linear-to-r from-indigo-600 to-purple-600 bg-clip-text text-transparent">
-                      ${livePrice.toFixed(2)}
+                      ₹{livePrice.toFixed(2)}
                     </span>
                   </div>
                 </div>
@@ -328,7 +322,6 @@ export const UserDashboard = ({ user, onLogout }) => {
             </div>
           </div>
         ) : (
-          // Booking History
           <div className="bg-white rounded-2xl shadow-xl border border-gray-100 p-8">
             <h2 className="text-2xl font-bold mb-6">My Bookings</h2>
             {bookings.length === 0 ? (
@@ -352,7 +345,7 @@ export const UserDashboard = ({ user, onLogout }) => {
                       )}
                     </div>
                     <div className="text-right">
-                      <div className="text-2xl font-bold text-gray-900">${b.totalPrice || 0}</div>
+                      <div className="text-2xl font-bold text-gray-900">₹{b.totalPrice || 0}</div>
                       <div className="text-green-600 font-bold text-xs bg-green-50 px-3 py-1.5 rounded-full mt-2 inline-block">Confirmed</div>
                     </div>
                   </div>
